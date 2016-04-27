@@ -1,0 +1,5 @@
+[hub]
+hub ansible_ssh_host=192.168.35.151
+
+[remote]
+wan1 ansible_ssh_host=192.168.35.152
