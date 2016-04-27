@@ -25,7 +25,7 @@
     - name: copy to file
       lineinfile:
         line={{ item }} 
-        dest=/home/ubajzelj/SINOG/output_{{ inventory_hostname }}.txt
+        dest=./output_{{ inventory_hostname }}.txt
         regexp="{{ item | regex_replace('(?P<int>GigabitEthernet[0-9]).*', '\\g<int>') }}"
       with_items: "{{ router_output.stdout_lines }}"
       when: item | search("^Gigabit.*")
