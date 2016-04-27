@@ -1,0 +1,45 @@
+- name: Configure basic settings on the router
+  hosts: all
+  connection: local
+  vars:
+    - username: "cisco"
+    - password: "cisco"
+  tasks:
+    - name: Configure hostname
+      ios_config:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        lines:
+          - hostname {{ inventory_hostname }}
+   
+    - name: print
+      debug: var=item
+      with_items: "{{ users }}"
+
+    - name: Add users
+      ios_config:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        lines:
+          - username {{ item }} privilege {{ users[item].privilege }} password 0 {{ users[item].password }}
+      with_items: "{{ users }}"
+
+    # Delete users that are not in vars procedure (not working yet)
+    - name: Get all users
+      ios_command:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        commands:
+          - show running-config | include ^username
+      register: run_config_users
+
+    - name: Display running configuration with users
+      debug: var=item
+      with_items: "{{ run_config_users.stdout_lines | regex_replace('username (?P<user>[a-z0-9*]*) privilege[a-z0-9 *]*', '\\g<user>')}} "
+      register: parsed_users
+      when: item != "********"
+
+

@@ -1,0 +1,8 @@
+---
+users:
+  admin:
+    password: mypass
+    privilege: 15
+  operator:
+    password: myhardpass
+    privilege: 5

@@ -17,7 +17,7 @@
     - name: Print the lines with the GigabitEthernet interface
       debug: var=item
       with_items: "{{ router_output.stdout_lines }}"
-      when: item | search("^Gigabit.*") | regex_replace('\s+', ' ') 
+      when: item | search("^Gigabit.*") 
 
     - name: Create file if the file does not exists
       file: path=./output_{{ inventory_hostname }}.txt state=touch
