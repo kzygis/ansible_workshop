@@ -6,3 +6,8 @@ users:
   operator:
     password: myhardpass
     privilege: 5
+vty_acl:
+  name: VTY_ACL
+  commands: 
+    - deny   ip host 192.168.35.10 any
+    - permit ip 192.168.35.0 0.0.0.255 any

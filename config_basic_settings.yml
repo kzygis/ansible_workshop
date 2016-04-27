@@ -13,10 +13,6 @@
         lines:
           - hostname {{ inventory_hostname }}
    
-    - name: print
-      debug: var=item
-      with_items: "{{ users }}"
-
     - name: Add users
       ios_config:
         host: "{{ ansible_ssh_host }}"
@@ -26,20 +22,48 @@
           - username {{ item }} privilege {{ users[item].privilege }} password 0 {{ users[item].password }}
       with_items: "{{ users }}"
 
-    # Delete users that are not in vars procedure (not working yet)
-    - name: Get all users
-      ios_command:
+#    # Delete users that are not in vars procedure (not working yet)
+#    - name: Get all users
+#      ios_command:
+#        host: "{{ ansible_ssh_host }}"
+#        username: "{{ username }}"
+#        password: "{{ password }}"
+#        commands:
+#          - show running-config | include ^username
+#      register: run_config_users
+#
+#    - name: Display running configuration with users
+#      debug: var=item
+#      with_items: "{{ run_config_users.stdout_lines | regex_replace('username (?P<user>[a-z0-9*]*) privilege[a-z0-9 *]*', '\\g<user>')}} "
+#      register: parsed_users
+#      when: item != "********"
+
+#    - name: Add access-list to vty line
+#      ios_config:
+#        host: "{{ ansible_ssh_host }}"
+#        username: "{{ username }}"
+#        password: "{{ password }}"
+#        lines:
+#          - 10 deny ip host
+
+
+    - name: Add vty access-list
+      ios_config:
         host: "{{ ansible_ssh_host }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        commands:
-          - show running-config | include ^username
-      register: run_config_users
+        lines:
+          - deny   ip host 192.168.35.10 any
+          - permit ip 192.168.35.0 0.0.0.255 any
+        parents: ['ip access-list extended VTY_ACL']
+        before: ['no ip access-list extended VTY_ACL']
+        match: exact
 
-    - name: Display running configuration with users
-      debug: var=item
-      with_items: "{{ run_config_users.stdout_lines | regex_replace('username (?P<user>[a-z0-9*]*) privilege[a-z0-9 *]*', '\\g<user>')}} "
-      register: parsed_users
-      when: item != "********"
-
-
+    - name: Apply access-list
+      ios_config:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        lines:
+          - access-class VTY_ACL in
+        parents: ['line vty 0 4']
