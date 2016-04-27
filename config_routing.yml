@@ -1,0 +1,24 @@
+- name: Configure routing
+  hosts: all
+  connection: local
+  vars:
+    - username: "cisco"
+    - password: "cisco"
+  tasks:
+    - name: Configure interfaces
+      ios_template:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        src: templates/interfaces.j2
+      with_items: "{{ interfaces }}" 
+
+    - name: Enable interfaces
+      ios_config:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        lines:
+          - no shutdown
+        parents: ['interface {{ item }}']
+      with_items: "{{ interfaces }}"

@@ -1,0 +1,12 @@
+interfaces:
+  GigabitEthernet2:
+    ip_address: 192.168.123.11
+    netmask: 255.255.255.0
+  Loopback0:
+    ip_address: 11.11.11.11
+    netmask: 255.255.255.255
+routing:
+  ospf:
+    interfaces:
+      - GigabitEthernet2
+      - Loopback0
