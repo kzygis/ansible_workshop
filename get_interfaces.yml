@@ -20,7 +20,7 @@
       when: item | search("^Gigabit.*") | regex_replace('\s+', ' ') 
 
     - name: Create file if file does not exists
-      file: path=/home/ubajzelj/SINOG/output_{{ inventory_hostname }}.txt state=touch
+      file: path=./output_{{ inventory_hostname }}.txt state=touch
 
     - name: copy to file
       lineinfile:
