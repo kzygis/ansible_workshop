@@ -1,11 +1,11 @@
-- name: Get interfaces from the routers
+- name: Get the list of interfaces from the routers and store the list to the file
   hosts: all
   connection: local
   vars:
     - username: "cisco"
     - password: "cisco"
   tasks:
-    - name: test show command
+    - name: Execute show ip interface brief command
       ios_command:
         host: "{{ ansible_ssh_host }}"
         username: "{{ username }}"
@@ -14,15 +14,15 @@
           - show ip interface brief
       register: router_output
 
-    - name: print output
+    - name: Print the lines with the GigabitEthernet interface
       debug: var=item
       with_items: "{{ router_output.stdout_lines }}"
       when: item | search("^Gigabit.*") | regex_replace('\s+', ' ') 
 
-    - name: Create file if file does not exists
+    - name: Create file if the file does not exists
       file: path=./output_{{ inventory_hostname }}.txt state=touch
 
-    - name: copy to file
+    - name: Copy output lines to the file
       lineinfile:
         line={{ item }} 
         dest=./output_{{ inventory_hostname }}.txt

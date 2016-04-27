@@ -1,11 +1,11 @@
-- name: Get version from routers
+- name: Get softwere version from routers
   hosts: all
   connection: local
   vars:
     - username: "cisco"
     - password: "cisco"
   tasks:
-    - name: test show command
+    - name: Execute show version command on all routers
       ios_command:
         host: "{{ ansible_ssh_host }}"
         username: "{{ username }}"
@@ -15,6 +15,6 @@
       register: router_output
 
 # Use named regex to get <ver> variable, which can be used later...
-    - name: print output
+    - name: Print software version to the screen
       debug: msg="{{ router_output.stdout | regex_replace('.* (?P<ver>Version [0-9]{2}\.[0-9]{2}\.[0-9]{2}\.. ).*', '\\g<ver>') }}"
 
