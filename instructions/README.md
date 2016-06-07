@@ -4,18 +4,16 @@
 V prvi fazi je potrebno pripraviti virtualni streznik, na katerem se bo izvajal Ansible.
 
 Za instalacijo sledite navodilom:
-- Prenesi Ubuntu 14.10 s spletnega mesta - [prenos](http://old-releases.ubuntu.com/releases/utopic/ubuntu-14.10-server-amd64.iso)
-- Kreiraj virtualni streznik - [screenshoot1](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc1.png)
-- Dodeli RAM (2GB) - [screenshoot2](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc2.png)
-- Kreiraj virtualni disk - [screenshoot3](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc3.png) [screenshoot4](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc4.png) [screenshoot5](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc5.png) [screenshoot6](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc6.png)
-- Dokoncaj pripravo virtualnega streznika
-- Pojdi v nastavitve virtualnega streznika
-- Izberi mrezne nastavitve
-- Izberi prvi mrezni adapter in ga nastavi kot NAT - [screenshoot7](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc7.png)
-- Izberi drugi mrezni adapter in ga nastavi kot Host-only Adapter [screenshoot8](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc8.png)
-- Izberi zavihek Storage in v opticni pogon dodaj ISO datoteko, ki si jo prenesel v prvem koraku - [screenshoot9](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc9.png) [screenshoot10](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc10.png)
-- Instaliraj Ubuntu [screenshoot11](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/sc11.png) 
-- Nastavi staticni IP na vmesnku eth1 (/etc/network/interfaces)
+- Prenesi Ubuntu 14.04 s spletnega mesta - [prenos](http://releases.ubuntu.com/14.04/ubuntu-14.04.4-server-amd64.iso)
+- Kreiraj virtualni streznik z naslednjo konfiguracijo:
+-- CPU: 1
+-- RAM: 2GB
+-- Disk: 15GB
+-- NIC: 
+--- eth0: Attached to NAT
+--- eth1: Attached to Host-only Adapter
+- Instaliraj Ubuntu
+- Nastavi staticni IP na vmesnku eth1
 ```
 # The loopback network interface
 auto lo
@@ -27,11 +25,32 @@ iface eth0 inet dhcp
 
 auto eth1
 iface eth1 inet static
+	# Izberi poljuben IP iz subneta dolocenega za vmesnik
 	address 192.168.35.120
 	netmask 255.255.255.0
 ```
 - Ponovno zaceni streznik
+- Izvedi
+```
+sudo apt-get update
+```
 
+## Instalacija Ansible
+- Prenesi Ansible network
+```
+wget http://releases.ansible.com/ansible-network/2.0.1.0-0.2/ansible_2.0.1.0-0.2.networkppa~trusty_all.deb
+```
+- Instaliraj Ansible network
+```
+sudo dpkg -i ansible_2.0.1.0-0.2.networkppa~trusty_all.deb
+sudo apt-get -f install
+```
+- Preveri delovanje ansible
+```
+$ansible --version
+ansible 2.0.1.0
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = Default w/o overrides
+```
 
-
--  
+  
