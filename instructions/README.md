@@ -6,12 +6,12 @@ V prvi fazi je potrebno pripraviti virtualni streznik, na katerem se bo izvajal 
 Za instalacijo sledite navodilom:
 - Prenesi Ubuntu 14.04 s spletnega mesta - [prenos](http://releases.ubuntu.com/14.04/ubuntu-14.04.4-server-amd64.iso)
 - Kreiraj virtualni streznik z naslednjo konfiguracijo:
--- CPU: 1
--- RAM: 2GB
--- Disk: 15GB
--- NIC: 
---- eth0: Attached to NAT
---- eth1: Attached to Host-only Adapter
+ - CPU: 1
+ - RAM: 2GB
+ - Disk: 15GB
+ - NIC: 
+  - eth0: Attached to NAT
+  - eth1: Attached to Host-only Adapter
 - Instaliraj Ubuntu
 - Nastavi staticni IP na vmesnku eth1
 ```
@@ -56,13 +56,13 @@ ansible 2.0.1.0
 ## Instalacija Cisco CSR usmerjevalnikov na VirtualBox
 - Prenesi brezplacno razlicico CSR 1000v usmerjevalnika iz cisco.com (potreben je vpis z uporabniskim imenom in geslom) - npr. csr1000v-universalk9.03.15.00.S.155-2.S-std.iso
 - Kreiraj virtualni streznik z naslednjo konfiguracijo
--- CPU: 1
--- RAM: 2GB
--- Disk: 8GB
--- NIC:
---- Gi1: Attached to Host-only Adapter
---- Gi2: Attached to Host-only Adapter
---- Gi3: Attached to Host-only Adapter
+ - CPU: 1
+ - RAM: 2GB
+ - Disk: 8GB
+ - NIC:
+  - Gi1: Attached to Host-only Adapter
+  - Gi2: Attached to Host-only Adapter
+  - Gi3: Attached to Host-only Adapter
 - V virtualni DVD drive vstavi ISO in instaliraj CSR usmerjevalnik
 - Nastavi IP na vmesnik GigabitEthernet 1 (Ce vmesnik ne gre v stanje up, shrani konfiguracijo in restartej usmerjevalnik)
 ```
