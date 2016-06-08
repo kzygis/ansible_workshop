@@ -121,9 +121,9 @@ Connection to 192.168.35.123 closed.
 ```
 
 ## Posnetki virtualk
-[virtualke](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot1.png)
-[ansible](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot2.png)
-[CSR1000v 1](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot3.png)
-[CSR1000v 2](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot4.png)
-[CSR1000v 3](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot5.png)
+- [virtualke](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot1.png)
+- [ansible](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot2.png)
+- [CSR1000v 1](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot3.png)
+- [CSR1000v 2](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot4.png)
+- [CSR1000v 3](https://raw.githubusercontent.com/ubajze/ansible_workshop/master/instructions/sc/screenshoot5.png)
 
