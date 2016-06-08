@@ -1,4 +1,4 @@
-- name: Get softwere version from routers
+- name: Get SW version from routers
   hosts: all
   connection: local
   vars:
@@ -14,7 +14,19 @@
           - show version
       register: router_output
 
+    - name: Print command output
+      debug: var=router_output['stdout_lines']
+
 # Use named regex to get <ver> variable, which can be used later...
     - name: Print software version to the screen
       debug: msg="{{ router_output.stdout | regex_replace('.* (?P<ver>Version [0-9]{2}\.[0-9]{2}\.[0-9]{2}\.. ).*', '\\g<ver>') }}"
+
+    - name: Set uptime variable
+      set_fact:
+        uptime: "{{ item }}"
+      with_items: "{{ router_output['stdout_lines'] }}"
+      when: item | search('uptime')
+
+    - name: Print uptime
+      debug: var=uptime
 

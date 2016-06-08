@@ -90,7 +90,7 @@ Password:
 R1#
 ```
 * Ugasni usmerjevalnik v VirtualBox (power off)
-* Naredi clone virtualne masine (2x)
+* Naredi clone virtualne masine (2x) (Oznaci "Reinitialize the MAC address of all network cards")
 * Zazeni vse tri usmerjevalnike
 * Spremeni osnovne nastavitve na drugem in tretjem usmerjevalniku
 ```
