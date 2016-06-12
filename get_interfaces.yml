@@ -2,10 +2,10 @@
   hosts: all
   connection: local
   vars:
-    - username: "cisco"
-    - password: "cisco"
+    - username: "ansible"
+    - password: "ansible"
   tasks:
-    - name: Execute show ip interface brief command
+    - name: Execute "show ip interface brief" command
       ios_command:
         host: "{{ ansible_ssh_host }}"
         username: "{{ username }}"
@@ -14,18 +14,27 @@
           - show ip interface brief
       register: router_output
 
-    - name: Print the lines with the GigabitEthernet interface
+    - name: Print interfaces
       debug: var=item
-      with_items: "{{ router_output.stdout_lines }}"
-      when: item | search("^Gigabit.*") 
+      with_items: "{{ router_output['stdout_lines'] }}"
+      when: item | search('GigabitEthernet|Loopback') 
+
+    - name: Check file status
+      stat:
+        path=./output_{{ inventory_hostname }}.txt
+      register: file_status
+
+    - name: Print file_status variable
+      debug: var=file_status
 
     - name: Create file if the file does not exists
       file: path=./output_{{ inventory_hostname }}.txt state=touch
+      when: not file_status.stat.exists
 
     - name: Copy output lines to the file
       lineinfile:
         line={{ item }} 
         dest=./output_{{ inventory_hostname }}.txt
-        regexp="{{ item | regex_replace('(?P<int>GigabitEthernet[0-9]).*', '\\g<int>') }}"
-      with_items: "{{ router_output.stdout_lines }}"
-      when: item | search("^Gigabit.*")
+        regexp="{{ item | regex_replace('(?P<int>Loopback|GigabitEthernet[0-9]*).*', '\\g<int>') }}"
+      with_items: "{{ router_output['stdout_lines'] }}"
+      when: item | search('GigabitEthernet|Loopback')

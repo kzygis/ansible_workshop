@@ -2,8 +2,8 @@
   hosts: all
   connection: local
   vars:
-    - username: "cisco"
-    - password: "cisco"
+    - username: "ansible"
+    - password: "ansible"
   tasks:
     - name: Configure hostname
       ios_config:
@@ -12,54 +12,29 @@
         password: "{{ password }}"
         lines:
           - hostname {{ inventory_hostname }}
-   
-    - name: Add users
+
+    - name: Remove ACL from vty
       ios_config:
         host: "{{ ansible_ssh_host }}"
         username: "{{ username }}"
         password: "{{ password }}"
         lines:
-          - username {{ item }} privilege {{ users[item].privilege }} password 0 {{ users[item].password }}
-      with_items: "{{ users }}"
+          - no access-class VTY_ACL in
+        parents: ['line vty 0 4']
 
-#    # Delete users that are not in vars procedure (not working yet)
-#    - name: Get all users
-#      ios_command:
-#        host: "{{ ansible_ssh_host }}"
-#        username: "{{ username }}"
-#        password: "{{ password }}"
-#        commands:
-#          - show running-config | include ^username
-#      register: run_config_users
-#
-#    - name: Display running configuration with users
-#      debug: var=item
-#      with_items: "{{ run_config_users.stdout_lines | regex_replace('username (?P<user>[a-z0-9*]*) privilege[a-z0-9 *]*', '\\g<user>')}} "
-#      register: parsed_users
-#      when: item != "********"
-
-#    - name: Add access-list to vty line
-#      ios_config:
-#        host: "{{ ansible_ssh_host }}"
-#        username: "{{ username }}"
-#        password: "{{ password }}"
-#        lines:
-#          - 10 deny ip host
-
-
-    - name: Add vty access-list
+    - name: Configure ACL
       ios_config:
         host: "{{ ansible_ssh_host }}"
         username: "{{ username }}"
         password: "{{ password }}"
         lines:
-          - deny   ip host 192.168.35.10 any
-          - permit ip 192.168.35.0 0.0.0.255 any
+           - deny   ip host 192.168.35.111 any
+           - permit ip 192.168.35.0 0.0.0.255 any
         parents: ['ip access-list extended VTY_ACL']
         before: ['no ip access-list extended VTY_ACL']
         match: exact
 
-    - name: Apply access-list
+    - name: Apply ACL
       ios_config:
         host: "{{ ansible_ssh_host }}"
         username: "{{ username }}"
@@ -67,3 +42,19 @@
         lines:
           - access-class VTY_ACL in
         parents: ['line vty 0 4']
+
+    - name: Add SNMP community
+      ios_config:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        lines:
+          - snmp-server community {{ snmp.community }} RO
+
+    - name: Configure banner
+      ios_template:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        src: ./templates/banner.j2
+   
