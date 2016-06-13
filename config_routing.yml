@@ -2,23 +2,35 @@
   hosts: all
   connection: local
   vars:
-    - username: "cisco"
-    - password: "cisco"
+    - username: "ansible"
+    - password: "ansible"
   tasks:
     - name: Configure interfaces
-      ios_template:
-        host: "{{ ansible_ssh_host }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        src: templates/interfaces.j2
-      with_items: "{{ interfaces }}" 
-
-    - name: Enable interfaces
       ios_config:
         host: "{{ ansible_ssh_host }}"
         username: "{{ username }}"
         password: "{{ password }}"
         lines:
+          - ip address {{ interfaces[item].ip_address }} {{ interfaces[item].netmask }}
           - no shutdown
         parents: ['interface {{ item }}']
       with_items: "{{ interfaces }}"
+
+    - name: Enable OSPF
+      ios_config:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        lines:
+          - router-id {{ routing.ospf.router_id }}
+        parents: ['router ospf {{ routing.ospf.process_id }}']
+
+    - name: Enable OSPF interfaces
+      ios_config:
+        host: "{{ ansible_ssh_host }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        lines:
+          - network {{ interfaces[item].ip_address }} 0.0.0.0 area {{ routing.ospf.interfaces[item].area }}
+        parents: ['router ospf {{ routing.ospf.process_id }}']
+      with_items: "{{ routing.ospf.interfaces }}"
